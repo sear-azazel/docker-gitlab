@@ -39,6 +39,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && gem install --no-document bundler \
  && rm -rf /var/lib/apt/lists/*
 
+WORKDIR ${GITLAB_INSTALL_DIR}
+
 RUN apt-get update && apt-get -y install patch \
  && wget -O app_ja.patch https://raw.githubusercontent.com/ksoichiro/gitlab-i18n-patch/master/patches/v8.16.6/app_ja.patch \
  && patch -p1 < app_ja.patch
@@ -53,6 +55,6 @@ RUN chmod 755 /sbin/entrypoint.sh
 EXPOSE 22/tcp 80/tcp 443/tcp
 
 VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}"]
-WORKDIR ${GITLAB_INSTALL_DIR}
+
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 CMD ["app:start"]
