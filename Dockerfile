@@ -39,8 +39,6 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && gem install --no-document bundler \
  && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get -y install patch
-
 RUN wget -O app_ja.patch https://raw.githubusercontent.com/ksoichiro/gitlab-i18n-patch/master/patches/${GITLAB_VERSION}/app_ja.patch && \
     patch -p1 < app_ja.patch && \
     rm app_ja.patch
