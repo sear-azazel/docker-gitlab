@@ -1,12 +1,12 @@
 FROM sameersbn/ubuntu:14.04.20170503
 MAINTAINER sameer@damagehead.com
 
-ENV GITLAB_VERSION=9.1.4 \
+ENV GITLAB_VERSION=9.2.5 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.6.3 \
-    GITLAB_SHELL_VERSION=5.0.2 \
-    GITLAB_WORKHORSE_VERSION=1.4.3 \
-    GITLAB_PAGES_VERSION=0.4.0 \
+    GITLAB_SHELL_VERSION=5.0.4 \
+    GITLAB_WORKHORSE_VERSION=2.0.0 \
+    GITLAB_PAGES_VERSION=0.4.2 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -53,9 +53,13 @@ COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
+WORKDIR ${GITLAB_INSTALL_DIR}
+RUN apt-get update && apt-get -y install patch \
+ && wget -O app_ja.patch https://raw.githubusercontent.com/ksoichiro/gitlab-i18n-patch/master/patches/v9.1.4/app_ja.patch \
+ && patch -p1 < app_ja.patch
+
 EXPOSE 22/tcp 80/tcp 443/tcp
 
 VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}"]
-WORKDIR ${GITLAB_INSTALL_DIR}
 ENTRYPOINT ["/sbin/entrypoint.sh"]
 CMD ["app:start"]
